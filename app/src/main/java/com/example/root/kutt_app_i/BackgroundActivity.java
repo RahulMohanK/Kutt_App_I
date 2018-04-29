@@ -1,5 +1,7 @@
 package com.example.root.kutt_app_i;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -60,35 +62,39 @@ public class BackgroundActivity extends AppCompatActivity {
 
 
     public void insertData(){
-
+        SharedPreferences sp = getSharedPreferences("prev", Activity.MODE_PRIVATE);
+        final SharedPreferences.Editor editor = sp.edit();
+        String prevs=sp.getString("prev","");
         String text = Clipboard_Utils.getDataFromClipboard(BackgroundActivity.this);
         String[] text1 = text.split(":");
+        if(!text.equals(prevs)) {
+            editor.putString("prev",text);
+            editor.apply();
+            if (!text.equals("")) {
 
-        if (!text.equals("")){
-
-            if(text1[0].equals("http") || text1[0].equals("https")  ) {
-
-
-                boolean isInserted = myDb.insertData(text);
-
-
-                if (isInserted == true) {
-
-                    Toast.makeText(BackgroundActivity.this, "Data Inserted ", Toast.LENGTH_SHORT).show();
-                } else {
-
-                    Toast.makeText(BackgroundActivity.this, "Not a legal link", Toast.LENGTH_SHORT).show();
+                if (text1[0].equals("http") || text1[0].equals("https")) {
 
 
-                }
+                    boolean isInserted = myDb.insertData(text);
 
+
+                    if (isInserted == true) {
+
+                        Toast.makeText(BackgroundActivity.this, "Data Inserted ", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        Toast.makeText(BackgroundActivity.this, "Not a legal link", Toast.LENGTH_SHORT).show();
+
+
+                    }
+
+
+                } else
+                    Toast.makeText(BackgroundActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
 
             }
-
-            else
-                Toast.makeText(BackgroundActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
-
         }
+
 
     }
 
