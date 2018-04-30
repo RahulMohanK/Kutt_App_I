@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
 
-
+            Boolean dd = deletelink(link);
             contentValues.put(COL2, link);
 
 
