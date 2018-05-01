@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
@@ -63,6 +64,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         final ListenItem listen = listenItems.get(position);
 
         holder.Name.setText(listen.getLink());
+        holder.card.setVisibility(View.VISIBLE);
 
         holder.clip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +90,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 if(myDb.deletelink(link)){
                     holder.linearLayout.setVisibility(View.GONE);
                     holder.confirm.setVisibility(View.GONE);
+                    holder.card.setVisibility(View.GONE);
                     Toast.makeText(context, "Link Removed Successfully!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -122,11 +125,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public LinearLayout linearLayout,confirm;
         private ImageView clip,del;
         private Button cancel,delete;
+        private CardView card;
 
 
         public ViewHolder(final View ItemView, Context context, List<ListenItem> listenItems) {
             super(ItemView);
-
+            card = ItemView.findViewById(R.id.card);
             confirm = ItemView.findViewById(R.id.confirm);
             delete = ItemView.findViewById(R.id.delete);
             cancel = ItemView.findViewById(R.id.cancel);

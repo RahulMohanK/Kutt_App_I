@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,9 +20,10 @@ public class MainActivity extends AppCompatActivity  {
 
 
     DatabaseHelper myDb;
-
-    private static Button  show_text,got;
-    private static TextView clipboardData;
+    TextView data;
+    ImageView save;
+    String text;
+    Button  got;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +34,11 @@ public class MainActivity extends AppCompatActivity  {
 
        //show_text = (Button) findViewById(R.id.show_text);//
 
-        got = (Button) findViewById(R.id.button);
-
+        got = findViewById(R.id.button);
+        data = findViewById(R.id.clipboard_data);
+        save = findViewById(R.id.save);
+        save.setVisibility(View.GONE);
        //clipboardData = (TextView) findViewById(R.id.clipboard_data);//
-
        got.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View v) {
@@ -44,12 +47,51 @@ public class MainActivity extends AppCompatActivity  {
                startActivity(ii);
            }
        });
+       get_data();
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertData();
+            }
+        });
 
 
 
-        //showData();//
+
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        get_data();
+    }
+    public void get_data(){
+        text = Clipboard_Utils.getDataFromClipboard(MainActivity.this);
+        String[] text1 = text.split(":");
+        if (!text.equals("")) {
+            if (text1[0].equals("http") || text1[0].equals("https")) {
+                data.setText(text);
+                save.setVisibility(View.VISIBLE);
+            } else {
+                data.setText("Clipboard doesn't contain a valid link");
+            }
+        }
 
 
+    }
+    public void insertData(){
+        String[] text1 = text.split(":");
+        if (!text.equals("")) {
+            if (text1[0].equals("http") || text1[0].equals("https")) {
+                boolean isInserted = myDb.insertData(text);
+                if (isInserted) {
+                    Toast.makeText(MainActivity.this, "Link saved", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    Toast.makeText(MainActivity.this, "Not a legal link", Toast.LENGTH_SHORT).show();
+                }
+            } else
+                Toast.makeText(MainActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 

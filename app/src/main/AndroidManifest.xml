@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".BackgroundActivity"
-            android:label="Saved links"/>
+            android:label="Saved links"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
