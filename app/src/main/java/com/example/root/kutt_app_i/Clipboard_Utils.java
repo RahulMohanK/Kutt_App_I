@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Build;
 import android.widget.Toast;
 
+import static android.content.ClipDescription.MIMETYPE_TEXT_PLAIN;
+
 public class Clipboard_Utils {
 
     /**
@@ -66,10 +68,27 @@ public class Clipboard_Utils {
     private static String getClipboardDataForHoney(Context mContext) {
         ClipboardManager clipboard = (ClipboardManager) mContext
                 .getSystemService(Context.CLIPBOARD_SERVICE);//get Clipboard manager
-        ClipData abc = clipboard.getPrimaryClip();//Get Primary clip
-        ClipData.Item item = abc.getItemAt(0);//Get item from clip data
+        if (clipboard.hasPrimaryClip())
+        {
+            ClipData data = clipboard.getPrimaryClip();
+            if (data.getItemCount() > 0)
+            {
+                CharSequence text = data.getItemAt(0).coerceToText(mContext);
+                if (text != null)
+                {
+                    return text.toString();
+                }else {
+                    return "";
+                }
+            }else {
+                return "";
+            }
+        }else {
+            return "";
+        }
 
-        return item.getText().toString();
+
+
     }
 
     @SuppressWarnings("deprecation")

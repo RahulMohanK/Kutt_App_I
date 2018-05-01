@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity  {
     TextView data;
     ImageView save;
     String text;
-    Button  got;
+    LinearLayout got;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
