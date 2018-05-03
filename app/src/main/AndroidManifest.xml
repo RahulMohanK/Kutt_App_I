@@ -19,6 +19,14 @@
         <activity android:name=".BackgroundActivity"
             android:label="Saved links"
             android:parentActivityName=".MainActivity"/>
+        <service
+            android:name=".TheService"
+            android:exported="false" />
+
+        <receiver
+            android:name=".ActionReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

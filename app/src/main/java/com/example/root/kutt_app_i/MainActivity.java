@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity  {
         myDb = new DatabaseHelper(this);
 
        //show_text = (Button) findViewById(R.id.show_text);//
-
+        Intent intent = new Intent(MainActivity.this,TheService.class);
+        startService(intent);
         got = findViewById(R.id.button);
         data = findViewById(R.id.clipboard_data);
         save = findViewById(R.id.save);
