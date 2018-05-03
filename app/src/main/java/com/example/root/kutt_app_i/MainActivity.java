@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         myDb = new DatabaseHelper(this);
+
 
        //show_text = (Button) findViewById(R.id.show_text);//
         Intent intent = new Intent(MainActivity.this,TheService.class);

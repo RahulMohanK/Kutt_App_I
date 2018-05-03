@@ -54,7 +54,7 @@ public class TheService extends Service {
                     notificationManager.createNotificationChannel(notificationChannel);
                 }
 
-               RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.coustomnotification);
+                RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.coustomnotification);
 
                 // Set Notification Title
        /* String strtitle = "This is title";
@@ -86,8 +86,8 @@ public class TheService extends Service {
                         // Set PendingIntent into Notification
                         //.setContentIntent(pIntent)
                         // Set RemoteViews into Notification
-                       // .setContentTitle("New data in Clipboard")
-                       // .setContentText("Copy??")
+                        // .setContentTitle("New data in Clipboard")
+                        // .setContentText("Copy??")
                         //.addAction(R.drawable.ic_file_notification,"ADD",pIntent)
                         //.setContentIntent(pIntent)
                         .setAutoCancel(true)
@@ -105,30 +105,16 @@ public class TheService extends Service {
 
                 //String text = Clipboard_Utils.getDataFromClipboard(TheService.this);
                 /*String[] text1 = a.split(":");
-
-
                 if (!a.equals("")) {
-
                     if (text1[0].equals("http") || text1[0].equals("https")) {
-
-
                         boolean isInserted = myDb.insertData(a);
-
-
                         if (isInserted == true) {
-
                             Toast.makeText(TheService.this, "Data Inserted ", Toast.LENGTH_SHORT).show();
                         } else {
-
                             Toast.makeText(TheService.this, "Not a legal link", Toast.LENGTH_SHORT).show();
-
-
                         }
-
-
                     } else
                         Toast.makeText(TheService.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
-
                 }*/
             }
         });
@@ -148,4 +134,3 @@ public class TheService extends Service {
         return null;
     }
 }
-

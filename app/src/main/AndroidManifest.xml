@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.root.kutt_app_i">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,9 +18,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BackgroundActivity"
+        <activity
+            android:name=".MainWeb"
+            android:parentActivityName=".BackgroundActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+        <activity
+            android:name=".BackgroundActivity"
             android:label="Saved links"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
+
         <service
             android:name=".TheService"
             android:exported="false" />
@@ -26,7 +34,9 @@
         <receiver
             android:name=".ActionReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
+
+
     </application>
 
 </manifest>

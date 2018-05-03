@@ -102,6 +102,15 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 holder.linearLayout.setVisibility(View.VISIBLE);
             }
         });
+        holder.Name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context,MainWeb.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.putExtra("link",listen.getLink());
+                context.startActivity(i);
+            }
+        });
 
 
         /*if (position > lastPosition) {
@@ -136,7 +145,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             cancel = ItemView.findViewById(R.id.cancel);
             del = ItemView.findViewById(R.id.del);
             clip = ItemView.findViewById(R.id.clip);
-            Name = (TextView) ItemView.findViewById(R.id.textViewName);
+            Name = ItemView.findViewById(R.id.textViewName);
 
             linearLayout=(LinearLayout)ItemView.findViewById(R.id.linearlayout);
         }

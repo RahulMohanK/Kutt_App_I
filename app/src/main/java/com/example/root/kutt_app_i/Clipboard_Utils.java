@@ -34,7 +34,7 @@ public class Clipboard_Utils {
         ClipboardManager clipboard = (ClipboardManager) mContext
                 .getSystemService(Context.CLIPBOARD_SERVICE);//Get Clipboard Manager
         ClipData clip = ClipData.newPlainText(
-                "clipboard data ", data);//Save plain text data to clip data
+                "clipboard data ", "Shortend link: "+data);//Save plain text data to clip data
         clipboard.setPrimaryClip(clip);//set clip data as primary clip
     }
 
