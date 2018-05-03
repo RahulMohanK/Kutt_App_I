@@ -56,6 +56,27 @@ public class BackgroundActivity extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        myDb = new DatabaseHelper(this);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+
+        recyclerView.setHasFixedSize(true);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+
+
+        // progressBar = (ProgressBar) findViewById(R.id.progressBar);//
+
+        listenItems = new ArrayList<>();
+        showData();
+
+    }
 
 
 

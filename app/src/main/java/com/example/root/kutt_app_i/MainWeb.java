@@ -2,6 +2,9 @@ package com.example.root.kutt_app_i;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBar;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
@@ -26,15 +30,18 @@ public class MainWeb extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_web_view);
-
         mWebview = new WebView(this);
         Bundle bundle = getIntent().getExtras();
         link = bundle.getString("link");
         MainWeb.this.setTitle(link);
-        //getSupportActionBar().setHideOnContentScrollEnabled(true);
+        getSupportActionBar().setElevation(0);
         mWebview.getSettings().setJavaScriptEnabled(true);
         mWebview.getSettings().setLoadsImagesAutomatically(true);
-        mWebview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);// enable javascript
+        mWebview.getSettings().setUseWideViewPort(true);
+        mWebview.getSettings().setSupportZoom(true);
+        //mWebview.getSettings().setBuiltInZoomControls(true);
+        mWebview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        mWebview.getSettings().setLoadWithOverviewMode(true);// enable javascript
 
         final Activity activity = this;
 
@@ -77,9 +84,16 @@ public class MainWeb extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(link));
+            intent.setData(Uri.parse(mWebview.getUrl()));
             startActivity(intent);
             return true;
+        }else if(id == R.id.copy){
+            ClipboardManager clipboard = (ClipboardManager) MainWeb.this
+                    .getSystemService(Context.CLIPBOARD_SERVICE);//Get Clipboard Manager
+            ClipData clip = ClipData.newPlainText(
+                    "clipboard data ",mWebview.getUrl() );//Save plain text data to clip data
+            clipboard.setPrimaryClip(clip);//set clip data as primary clip
+            Toast.makeText(MainWeb.this,"Link Copied to Clipboard",Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);

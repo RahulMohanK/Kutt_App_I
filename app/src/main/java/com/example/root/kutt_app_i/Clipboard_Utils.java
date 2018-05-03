@@ -36,8 +36,18 @@ public class Clipboard_Utils {
         ClipData clip = ClipData.newPlainText(
                 "clipboard data ", "Shortend link: "+data);//Save plain text data to clip data
         clipboard.setPrimaryClip(clip);//set clip data as primary clip
+        Toast.makeText(mContext,"Link Copied to Clipboard",Toast.LENGTH_SHORT).show();
     }
 
+    private static void copyToClipboardForHoney2(Context mContext,
+                                                String data) {
+        ClipboardManager clipboard = (ClipboardManager) mContext
+                .getSystemService(Context.CLIPBOARD_SERVICE);//Get Clipboard Manager
+        ClipData clip = ClipData.newPlainText(
+                "clipboard data ", data);//Save plain text data to clip data
+        clipboard.setPrimaryClip(clip);//set clip data as primary clip
+        Toast.makeText(mContext,"Link Copied to Clipboard",Toast.LENGTH_SHORT).show();
+    }
     //For below Honeycomb devices
     @SuppressWarnings("deprecation")
     private static void copyToClipboardHoneyLess(Context mContext,
