@@ -1,9 +1,12 @@
 package com.example.root.kutt_app_i;
 
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
+
+import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class ActionReceiver extends BroadcastReceiver {
 
@@ -44,7 +47,7 @@ public class ActionReceiver extends BroadcastReceiver {
 
                     if (isInserted == true) {
 
-                        Toast.makeText(context, "Data Inserted ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Link Saved ", Toast.LENGTH_SHORT).show();
                     } else {
 
                         Toast.makeText(context, "Not a legal link", Toast.LENGTH_SHORT).show();

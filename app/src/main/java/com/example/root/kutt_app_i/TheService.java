@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class TheService extends Service {
@@ -21,6 +22,7 @@ public class TheService extends Service {
     public final String CHANNEL_ID="my_notification_channel";
     private static final int idUnique=1234;
     DatabaseHelper myDb;
+    TextView link;
 
     @Override
     public void onCreate() {
@@ -64,6 +66,8 @@ public class TheService extends Service {
                     String strtext = "This is text";*/
 
                         // Open NotificationView Class on Notification Click
+
+                        Intent open  =new Intent(TheService.this,MainActivity.class);
                         Intent intent = new Intent(TheService.this, ActionReceiver.class);
                         Intent i = new Intent();
                         i.setAction(Intent.ACTION_SEND);
@@ -78,15 +82,16 @@ public class TheService extends Service {
                                 0);
                         PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
                                 0);
+                        PendingIntent opp = PendingIntent.getActivity(TheService.this, 0, open,
+                                0);
 
                         NotificationCompat.Builder builder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID)
                                 // Set Icon
                                 .setSmallIcon(R.drawable.ic_share_white_24dp)
                                 // Set Ticker Message
-                                .setTicker("Kutt: do you want to save it")
                                 // Dismiss Notification
                                 // Set PendingIntent into Notification
-                                //.setContentIntent(pIntent)
+                                .setContentIntent(opp)
                                 // Set RemoteViews into Notification
                                 // .setContentTitle("New data in Clipboard")
                                 // .setContentText("Copy??")
@@ -96,14 +101,21 @@ public class TheService extends Service {
                                 .setContent(remoteViews)
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
-
+                        //remoteViews.setOnClickPendingIntent(R.id.not,opp);
                         remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                         remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                       // remoteViews.setString(R.id.link,String ,a);
+                        if(a.length() > 35) {
+                            remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
+                        }else {
+                            remoteViews.setTextViewText(R.id.linka,a);
+                        }
+
                         NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                         // Build Notification with Notification Manager
                         notificationmanager.notify(0, builder.build());
 
-                        Toast.makeText(getBaseContext(), "Copy:\n" + a, Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getBaseContext(), "Copy:\n" + a, Toast.LENGTH_LONG).show();
 
                         //String text = Clipboard_Utils.getDataFromClipboard(TheService.this);
                             /*String[] text1 = a.split(":");
