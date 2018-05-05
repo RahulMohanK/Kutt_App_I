@@ -3,6 +3,7 @@ package com.example.root.kutt_app_i;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -29,9 +30,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -126,12 +135,54 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent();
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.setAction(Intent.ACTION_SEND);
-                i.putExtra(Intent.EXTRA_TEXT, link);
-                i.setType("text/plain");
-                context.startActivity(i);
+                if(!link.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                    final RequestQueue requestQueue = Volley.newRequestQueue(context);
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Intent i = new Intent();
+                                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    i.setAction(Intent.ACTION_SEND);
+                                    i.putExtra(Intent.EXTRA_TEXT, response);
+                                    i.setType("text/plain");
+                                    context.startActivity(i);
+                                    Toast.makeText(context,"Sharing shortened link",Toast.LENGTH_SHORT).show();
+                                    requestQueue.stop();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Intent i = new Intent();
+                                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    i.setAction(Intent.ACTION_SEND);
+                                    i.putExtra(Intent.EXTRA_TEXT, link);
+                                    i.setType("text/plain");
+                                    context.startActivity(i);
+                                    error.printStackTrace();
+                                    requestQueue.stop();
+                                }
+
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("url", link);
+                            return params;
+                        }
+                    };
+                    requestQueue.add(stringRequest);
+                }
+                else {
+                    Intent i = new Intent();
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.setAction(Intent.ACTION_SEND);
+                    i.putExtra(Intent.EXTRA_TEXT, link);
+                    i.setType("text/plain");
+                    context.startActivity(i);
+                }
+
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +207,43 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 holder.linearLayout.setVisibility(View.VISIBLE);
             }
         });
+        holder.cut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!link.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                    final RequestQueue requestQueue = Volley.newRequestQueue(context);
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Toast.makeText(context,"Link shortened",Toast.LENGTH_SHORT).show();
+                                    Clipboard_Utils.copyToClipboard(context,response);
+                                    requestQueue.stop();
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(context, "Something went wrong,try again later", Toast.LENGTH_SHORT).show();
+                                    error.printStackTrace();
+                                    requestQueue.stop();
+                                }
 
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<String, String>();
+                            params.put("url", link);
+                            return params;
+                        }
+                    };
+                    requestQueue.add(stringRequest);
+                }
+                else {
+                    Toast.makeText(context,"This link can't be shortened further",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
 
         /*if (position > lastPosition) {
@@ -178,7 +265,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         private TextView Name;
         public LinearLayout linearLayout,confirm,exp;
-        private ImageView clip,del,share,web;
+        private ImageView clip,del,share,web,cut;
         private Button cancel,delete;
         private CardView card;
         public String linkc;
@@ -187,6 +274,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public ViewHolder(final View ItemView, Context context, List<ListenItem> listenItems) {
             super(ItemView);
             card = ItemView.findViewById(R.id.card);
+            cut = ItemView.findViewById(R.id.cut);
             confirm = ItemView.findViewById(R.id.confirm);
             delete = ItemView.findViewById(R.id.delete);
             cancel = ItemView.findViewById(R.id.cancel);
@@ -196,9 +284,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             Name = ItemView.findViewById(R.id.textViewName);
             exp = ItemView.findViewById(R.id.expand);
             web = ItemView.findViewById(R.id.web);
-
-
-            linearLayout=(LinearLayout)ItemView.findViewById(R.id.linearlayout);
+            linearLayout=ItemView.findViewById(R.id.linearlayout);
         }
 
 

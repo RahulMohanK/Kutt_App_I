@@ -2,6 +2,7 @@ package com.example.root.kutt_app_i;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -59,7 +60,7 @@ public class MainWeb extends AppCompatActivity {
                 onReceivedError(view, rerr.getErrorCode(), rerr.getDescription().toString(), req.getUrl().toString());
             }
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onPageFinished(WebView view, String title) {
                 MainWeb.this.setTitle(view.getTitle());
             }
         });

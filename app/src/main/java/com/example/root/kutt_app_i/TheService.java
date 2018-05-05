@@ -1,19 +1,33 @@
 package com.example.root.kutt_app_i;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TheService extends Service {
 
@@ -21,7 +35,6 @@ public class TheService extends Service {
 
     public final String CHANNEL_ID="my_notification_channel";
     private static final int idUnique=1234;
-    DatabaseHelper myDb;
     TextView link;
 
     @Override
@@ -39,10 +52,11 @@ public class TheService extends Service {
 
         clipboard.addPrimaryClipChangedListener( new ClipboardManager.OnPrimaryClipChangedListener() {
             public void onPrimaryClipChanged() {
-                String a = clipboard.getText().toString();
+                boolean fg = isAppIsInBackground(TheService.this);
+                final String a = clipboard.getText().toString();
                 //myDb = new DatabaseHelper(TheService.this);
                 String[] text1 = a.split(":");
-                if (!a.equals("")) {
+                if (!a.equals("") && fg) {
                     if (text1[0].equals("http") || text1[0].equals("https")) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
@@ -58,7 +72,7 @@ public class TheService extends Service {
                             notificationManager.createNotificationChannel(notificationChannel);
                         }
 
-                        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.coustomnotification);
+                        final RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.coustomnotification);
 
                         // Set Notification Title
                    /* String strtitle = "This is title";
@@ -67,27 +81,20 @@ public class TheService extends Service {
 
                         // Open NotificationView Class on Notification Click
 
-                        Intent open  =new Intent(TheService.this,MainActivity.class);
-                        Intent intent = new Intent(TheService.this, ActionReceiver.class);
-                        Intent i = new Intent();
-                        i.setAction(Intent.ACTION_SEND);
-                        i.putExtra(Intent.EXTRA_TEXT, a);
-                        i.setType("text/plain");
+
+
                         // Send data to NotificationView Class
                         /*intent.putExtra("title", "1");*/
                         //startActivity(intent);
                         //intent.putExtra("action","action1");
                         // Open NotificationView.java Activity
-                        PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
-                                0);
-                        PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
-                                0);
+
+                        Intent open = new Intent(TheService.this, MainActivity.class);
                         PendingIntent opp = PendingIntent.getActivity(TheService.this, 0, open,
                                 0);
-
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID)
+                       final NotificationCompat.Builder builder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID)
                                 // Set Icon
-                                .setSmallIcon(R.drawable.ic_share_white_24dp)
+                                .setSmallIcon(R.drawable.notify)
                                 // Set Ticker Message
                                 // Dismiss Notification
                                 // Set PendingIntent into Notification
@@ -102,18 +109,98 @@ public class TheService extends Service {
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
                         //remoteViews.setOnClickPendingIntent(R.id.not,opp);
-                        remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
-                        remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                       // remoteViews.setString(R.id.link,String ,a);
-                        if(a.length() > 35) {
-                            remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
-                        }else {
-                            remoteViews.setTextViewText(R.id.linka,a);
+                        if(!a.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                            final RequestQueue requestQueue = Volley.newRequestQueue(TheService.this);
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            Intent i = new Intent(Intent.ACTION_SEND);
+                                            i.setType("text/plain");
+                                            i.putExtra(Intent.EXTRA_TEXT, response);
+                                            Intent intent = new Intent(TheService.this, ActionReceiver.class);
+                                            PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
+                                                    0);
+                                            PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
+                                                    0);
+                                            if(a.length() > 35) {
+                                                remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
+                                            }else {
+                                                remoteViews.setTextViewText(R.id.linka,a);
+                                            }
+                                            remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                            remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                            remoteViews.setTextViewText(R.id.title,response);
+                                            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                            // Build Notification with Notification Manager
+                                            notificationmanager.notify(0, builder.build());
+                                            requestQueue.stop();
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError error) {
+                                            Intent i = new Intent();
+                                            i.setAction(Intent.ACTION_SEND);
+                                            i.setType("text/plain");
+                                            i.putExtra(Intent.EXTRA_TEXT, a);
+                                            Intent intent = new Intent(TheService.this, ActionReceiver.class);
+                                            PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
+                                                    0);
+                                            PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
+                                                    0);
+                                            if(a.length() > 35) {
+                                                remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
+                                            }else {
+                                                remoteViews.setTextViewText(R.id.linka,a);
+                                            }
+                                            remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                            remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                            remoteViews.setTextViewText(R.id.title,"Something went wrong!!");
+                                            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                            // Build Notification with Notification Manager
+                                            notificationmanager.notify(0, builder.build());
+                                            error.printStackTrace();
+                                            requestQueue.stop();
+                                        }
+
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    params.put("url", a);
+                                    return params;
+                                }
+                            };
+                            requestQueue.add(stringRequest);
+                        }
+                        else {
+                            Intent i = new Intent();
+                            i.setAction(Intent.ACTION_SEND);
+                            i.setType("text/plain");
+                            i.putExtra(Intent.EXTRA_TEXT, a);
+                            Intent intent = new Intent(TheService.this, ActionReceiver.class);
+                            PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
+                                    0);
+                            PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
+                                    0);
+                            if(a.length() > 35) {
+                                remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
+                            }else {
+                                remoteViews.setTextViewText(R.id.linka,a);
+                            }
+                            remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                            remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                            remoteViews.setTextViewText(R.id.title,"");
+                            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                            // Build Notification with Notification Manager
+                            notificationmanager.notify(0, builder.build());
                         }
 
-                        NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                        // Build Notification with Notification Manager
-                        notificationmanager.notify(0, builder.build());
+                       // remoteViews.setString(R.id.link,String ,a);
+
+
+
 
                         //Toast.makeText(getBaseContext(), "Copy:\n" + a, Toast.LENGTH_LONG).show();
 
@@ -137,6 +224,30 @@ public class TheService extends Service {
         Toast.makeText(TheService.this, "Service Started", Toast.LENGTH_SHORT).show();
 
         return START_STICKY;
+    }
+    private boolean isAppIsInBackground(Context context) {
+        boolean isInBackground = true;
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+            for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+                if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+                    for (String activeProcess : processInfo.pkgList) {
+                        if (activeProcess.equals(context.getPackageName())) {
+                            isInBackground = false;
+                        }
+                    }
+                }
+            }
+        } else {
+            List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
+            ComponentName componentInfo = taskInfo.get(0).topActivity;
+            if (componentInfo.getPackageName().equals(context.getPackageName())) {
+                isInBackground = false;
+            }
+        }
+
+        return isInBackground;
     }
 
     @Override
