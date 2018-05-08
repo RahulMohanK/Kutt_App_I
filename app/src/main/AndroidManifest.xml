@@ -22,7 +22,8 @@
         <activity
             android:name=".MainWeb"
             android:parentActivityName=".BackgroundActivity"
-            android:theme="@style/Base.Theme.AppCompat.Light.DarkActionBar" />
+            android:theme="@style/NoActionBar"
+            />
         <activity
             android:name=".BackgroundActivity"
             android:label="Saved links"
@@ -36,6 +37,9 @@
             android:name=".ActionReceiver"
             android:enabled="true"
             android:exported="true" />
+        <activity android:name=".StarActivity"
+            android:label="Favorites"
+            android:parentActivityName=".MainActivity"/>
 
 
     </application>

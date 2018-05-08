@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,8 +37,8 @@ public class MainActivity extends AppCompatActivity  {
     TextView data,shlink;
     ImageView save,cut,copy,sharelink;
     String text;
-    LinearLayout got,sharel;
-    ProgressDialog dialog;
+    LinearLayout got,sharel,star;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +52,23 @@ public class MainActivity extends AppCompatActivity  {
         got = findViewById(R.id.button);
         sharel = findViewById(R.id.shortl);
         copy = findViewById(R.id.copy);
+        progressBar = findViewById(R.id.progressBar);
         sharelink = findViewById(R.id.sharelink);
         data = findViewById(R.id.clipboard_data);
         save = findViewById(R.id.save);
+        star = findViewById(R.id.star);
         save.setVisibility(View.GONE);
         shlink = findViewById(R.id.shortlink);
         sharel.setVisibility(View.GONE);
         cut = findViewById(R.id.cut);
         cut.setVisibility(View.GONE);
+        star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent j = new Intent(MainActivity.this,StarActivity.class);
+                startActivity(j);
+            }
+        });
         sharelink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,30 +89,28 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 if(!text.substring(0,26).equals("http://kutt.fossgect.club/")) {
-                    dialog = new ProgressDialog(MainActivity.this);
-                    dialog.setMessage("Shortening link...");
-                    dialog.show();
+                    cut.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
                     final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
+                                    cut.setVisibility(View.VISIBLE);
+                                    progressBar.setVisibility(View.GONE);
                                     sharel.setVisibility(View.VISIBLE);
                                     shlink.setText(response);
-                                    if(dialog.isShowing()){
-                                        dialog.dismiss();
-                                    }
                                     requestQueue.stop();
                                 }
                             },
                             new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
+                                    cut.setVisibility(View.VISIBLE);
+                                    progressBar.setVisibility(View.GONE);
                                     Toast.makeText(MainActivity.this, "Something went wrong,try again later", Toast.LENGTH_SHORT).show();
                                     error.printStackTrace();
-                                    if(dialog.isShowing()){
-                                        dialog.dismiss();
-                                    }
+
                                     requestQueue.stop();
                                 }
 
@@ -150,9 +158,9 @@ public class MainActivity extends AppCompatActivity  {
             public void onPrimaryClipChanged() {
                 text = Clipboard_Utils.getDataFromClipboard(MainActivity.this);
                 if(!text.substring(0,26).equals("http://kutt.fossgect.club/")) {
-                    sharel.setVisibility(View.GONE);get_data();
+                    sharel.setVisibility(View.GONE);
                 }
-
+                get_data();
             }
         });
 

@@ -53,7 +53,7 @@ public class TheService extends Service {
         clipboard.addPrimaryClipChangedListener( new ClipboardManager.OnPrimaryClipChangedListener() {
             public void onPrimaryClipChanged() {
                 boolean fg = isAppIsInBackground(TheService.this);
-                final String a = clipboard.getText().toString();
+                String a = clipboard.getText().toString();
                 //myDb = new DatabaseHelper(TheService.this);
                 String[] text1 = a.split(":");
                 if (!a.equals("") && fg) {
@@ -115,6 +115,7 @@ public class TheService extends Service {
                                     new Response.Listener<String>() {
                                         @Override
                                         public void onResponse(String response) {
+                                            String cc = clipboard.getText().toString();
                                             Intent i = new Intent(Intent.ACTION_SEND);
                                             i.setType("text/plain");
                                             i.putExtra(Intent.EXTRA_TEXT, response);
@@ -122,11 +123,11 @@ public class TheService extends Service {
                                             PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
                                                     0);
                                             PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
-                                                    0);
-                                            if(a.length() > 35) {
-                                                remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
+                                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                                            if(cc.length() > 35) {
+                                                remoteViews.setTextViewText(R.id.linka,cc.substring(0, 32) + "...");
                                             }else {
-                                                remoteViews.setTextViewText(R.id.linka,a);
+                                                remoteViews.setTextViewText(R.id.linka,cc);
                                             }
                                             remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                                             remoteViews.setOnClickPendingIntent(R.id.image1, share);
@@ -140,19 +141,21 @@ public class TheService extends Service {
                                     new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
+                                            String cc = clipboard.getText().toString();
+                                            Toast.makeText(TheService.this,cc,Toast.LENGTH_LONG).show();
                                             Intent i = new Intent();
                                             i.setAction(Intent.ACTION_SEND);
                                             i.setType("text/plain");
-                                            i.putExtra(Intent.EXTRA_TEXT, a);
+                                            i.putExtra(Intent.EXTRA_TEXT, cc);
                                             Intent intent = new Intent(TheService.this, ActionReceiver.class);
                                             PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
                                                     0);
                                             PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
-                                                    0);
-                                            if(a.length() > 35) {
-                                                remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
+                                                    1);
+                                            if(cc.length() > 35) {
+                                                remoteViews.setTextViewText(R.id.linka,cc.substring(0, 32) + "...");
                                             }else {
-                                                remoteViews.setTextViewText(R.id.linka,a);
+                                                remoteViews.setTextViewText(R.id.linka,cc);
                                             }
                                             remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                                             remoteViews.setOnClickPendingIntent(R.id.image1, share);
@@ -168,7 +171,8 @@ public class TheService extends Service {
                                 @Override
                                 protected Map<String, String> getParams() {
                                     Map<String, String> params = new HashMap<String, String>();
-                                    params.put("url", a);
+                                    String cc = clipboard.getText().toString();
+                                    params.put("url", cc);
                                     return params;
                                 }
                             };
@@ -183,7 +187,7 @@ public class TheService extends Service {
                             PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
                                     0);
                             PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
-                                    0);
+                                    1);
                             if(a.length() > 35) {
                                 remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
                             }else {
@@ -191,7 +195,7 @@ public class TheService extends Service {
                             }
                             remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                             remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                            remoteViews.setTextViewText(R.id.title,"");
+                            remoteViews.setTextViewText(R.id.title,"KUTT");
                             NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                             // Build Notification with Notification Manager
                             notificationmanager.notify(0, builder.build());

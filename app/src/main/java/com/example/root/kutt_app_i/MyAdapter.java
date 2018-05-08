@@ -1,6 +1,7 @@
 package com.example.root.kutt_app_i;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -10,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,10 +26,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +44,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,25 +84,87 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
         final ListenItem listen = listenItems.get(position);
         final String link = listen.getLink();
-        if(link.length() > 50) {
-            holder.linkc =link.substring(0, 47) + "...";
+        final String title_T = listen.getTitle();
+        final byte[] icon_T = listen.getIcon();
+        if(listen.getStar()==0){
+            holder.fav.setVisibility(View.GONE);
+            holder.del.setVisibility(View.VISIBLE);
+        }
+        else {
+            holder.fav.setVisibility(View.VISIBLE);
+            holder.del.setVisibility(View.GONE);
+        }
+        if(link.length() > 40) {
+            holder.linkc =link.substring(0, 37) + "...";
             holder.Name.setText(holder.linkc);
         }else {
             holder.Name.setText(link);
             holder.linkc =link;
         }
+        if(title_T == null ||  icon_T == null || title_T.equals("Web page not available")) {
+            holder.got_icon = false;
+            holder.got_tittle = false;
+            if (holder.mWebview != null) {
+                holder.mWebview.setWebViewClient(new WebViewClient());
+                holder.mWebview.setWebChromeClient(new WebChromeClient() {
+                    @Override
+                    public void onProgressChanged(WebView view, int newProgress) {
+                        super.onProgressChanged(view, newProgress);
 
-        /*holder.card.setVisibility(View.VISIBLE);
-        holder.mWebView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onReceivedTitle(WebView view, String title) {
-                super.onReceivedTitle(view, title);
-                if (!TextUtils.isEmpty(title)) {
-                    holder.Name.setText(title);
-                }
+                        // Your custom code.
+                    }
+
+                    @Override
+                    public void onReceivedTitle(WebView view, String title) {
+                        super.onReceivedTitle(view, title);
+                        if (title.length() > 30) {
+                            holder.title.setText(title.substring(0, 27) + "...");
+                        } else {
+                            holder.title.setText(title);
+                        }
+                        new DatabaseHelper(context).add_title(title,link);
+                        holder.got_tittle = true;
+                        if (holder.got_tittle && holder.got_icon) {
+                            holder.mWebview.setTag(null);
+                            holder.mWebview.clearHistory();
+                            holder.mWebview.removeAllViews();
+                            holder.mWebview.clearView();
+                            holder.mWebview.destroy();
+                            holder.mWebview = null;
+                        }
+                    }
+
+                    @Override
+                    public void onReceivedIcon(WebView view, Bitmap icon) {
+                        super.onReceivedIcon(view, icon);
+                        holder.web.setImageBitmap(icon);
+                        holder.got_icon = true;
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        icon.compress(Bitmap.CompressFormat.PNG, 0, stream);
+                        new DatabaseHelper(context).add_icon(stream.toByteArray(),link);
+                        if (holder.got_tittle && holder.got_icon) {
+                            holder.mWebview.setTag(null);
+                            holder.mWebview.clearHistory();
+                            holder.mWebview.removeAllViews();
+                            holder.mWebview.clearView();
+                            holder.mWebview.destroy();
+                            holder.mWebview = null;
+                        }
+                    }
+                });
+                holder.mWebview.loadUrl(link);
             }
-        });
-        holder.mWebView.loadUrl(link);*/
+        }else {
+            if (title_T.length() > 30) {
+                holder.title.setText(title_T.substring(0, 27) + "...");
+            } else {
+                holder.title.setText(title_T);
+            }
+            if(icon_T != null) {
+                holder.web.setImageBitmap(BitmapFactory.decodeByteArray(icon_T, 0, icon_T.length));
+            }
+
+        }
         holder.web.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,21 +174,25 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 context.startActivity(i);
             }
         });
-        holder.clip.setOnClickListener(new View.OnClickListener() {
+        holder.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onLongClick(View v) {
                 Clipboard_Utils.copyToClipboard(context,link);
-                //Toast.makeText(context,link,Toast.LENGTH_LONG).show();
+                return false;
             }
         });
         holder.del.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.linearLayout.setVisibility(View.GONE);
-                holder.confirm.setVisibility(View.VISIBLE);
+                DatabaseHelper myDb = new DatabaseHelper(context);
+                String link = listen.getLink();
+                myDb.updateData(link);
+                Toast.makeText(context,"Added to favorites",Toast.LENGTH_SHORT).show();
+                holder.del.setVisibility(View.GONE);
+                holder.fav.setVisibility(View.VISIBLE);
             }
         });
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+       /*holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(ex==1) {
@@ -131,10 +205,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     ex=1;
                 }
             }
-        });
+        });*/
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.share.setVisibility(View.GONE);
+                holder.progressBar.setVisibility(View.VISIBLE);
                 if(!link.substring(0,26).equals("http://kutt.fossgect.club/")) {
                     final RequestQueue requestQueue = Volley.newRequestQueue(context);
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
@@ -146,6 +222,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                                     i.setAction(Intent.ACTION_SEND);
                                     i.putExtra(Intent.EXTRA_TEXT, response);
                                     i.setType("text/plain");
+                                    holder.share.setVisibility(View.VISIBLE);
+                                    holder.progressBar.setVisibility(View.GONE);
                                     context.startActivity(i);
                                     Toast.makeText(context,"Sharing shortened link",Toast.LENGTH_SHORT).show();
                                     requestQueue.stop();
@@ -159,6 +237,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                                     i.setAction(Intent.ACTION_SEND);
                                     i.putExtra(Intent.EXTRA_TEXT, link);
                                     i.setType("text/plain");
+                                    holder.share.setVisibility(View.VISIBLE);
+                                    holder.progressBar.setVisibility(View.GONE);
                                     context.startActivity(i);
                                     error.printStackTrace();
                                     requestQueue.stop();
@@ -180,16 +260,30 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     i.setAction(Intent.ACTION_SEND);
                     i.putExtra(Intent.EXTRA_TEXT, link);
                     i.setType("text/plain");
+                    holder.share.setVisibility(View.VISIBLE);
+                    holder.progressBar.setVisibility(View.GONE);
                     context.startActivity(i);
                 }
 
             }
         });
-        holder.delete.setOnClickListener(new View.OnClickListener() {
+        holder.fav.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatabaseHelper myDb = new DatabaseHelper(context);
                 String link = listen.getLink();
+                myDb.updateNormal(link);
+                holder.fav.setVisibility(View.GONE);
+                holder.del.setVisibility(View.VISIBLE);
+                Toast.makeText(context,"Removed from favorites",Toast.LENGTH_SHORT).show();
+            }
+        });
+        /*holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper myDb = new DatabaseHelper(context);
+                String link = listen.getLink();
+                myDb.updateData(link);
                 //Toast.makeText(context, position, Toast.LENGTH_SHORT).show();
                 if(myDb.deletelink(link)){
                     holder.linearLayout.setVisibility(View.GONE);
@@ -199,7 +293,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     Toast.makeText(context, "Link Removed Successfully!", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
         holder.cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -207,7 +301,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 holder.linearLayout.setVisibility(View.VISIBLE);
             }
         });
-        holder.cut.setOnClickListener(new View.OnClickListener() {
+        /*holder.cut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!link.substring(0,26).equals("http://kutt.fossgect.club/")) {
@@ -243,16 +337,9 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     Toast.makeText(context,"This link can't be shortened further",Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
 
-        /*if (position > lastPosition) {
-
-            Animation animation = AnimationUtils.loadAnimation(context,
-                    R.anim.item_animation_fall_down);
-            holder.itemView.setAnimation(animation);
-            lastPosition = position;
-        }*/
 
     }
 
@@ -261,31 +348,40 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         return listenItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder  {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView Name;
-        public LinearLayout linearLayout,confirm,exp;
-        private ImageView clip,del,share,web,cut;
+        private TextView Name,title;
+        public LinearLayout linearLayout,confirm,exp,card;
+        private ImageView clip,del,share,web,fav;
         private Button cancel,delete;
-        private CardView card;
-        public String linkc;
-
+        //private CardView card;
+        private String linkc,link;
+        private WebView mWebview;
+        Boolean got_tittle,got_icon;
+        ProgressBar progressBar;
+        //final ListenItem listen = listenItems.get(position);
 
         public ViewHolder(final View ItemView, Context context, List<ListenItem> listenItems) {
             super(ItemView);
             card = ItemView.findViewById(R.id.card);
-            cut = ItemView.findViewById(R.id.cut);
+           // cut = ItemView.findViewById(R.id.cut);
+            title = ItemView.findViewById(R.id.title);
             confirm = ItemView.findViewById(R.id.confirm);
+            fav = ItemView.findViewById(R.id.fav);
             delete = ItemView.findViewById(R.id.delete);
             cancel = ItemView.findViewById(R.id.cancel);
             share = ItemView.findViewById(R.id.share);
             del = ItemView.findViewById(R.id.del);
-            clip = ItemView.findViewById(R.id.clip);
+            progressBar = ItemView.findViewById(R.id.progressBar);
+            //clip = ItemView.findViewById(R.id.clip);
             Name = ItemView.findViewById(R.id.textViewName);
-            exp = ItemView.findViewById(R.id.expand);
+            //exp = ItemView.findViewById(R.id.expand);
             web = ItemView.findViewById(R.id.web);
             linearLayout=ItemView.findViewById(R.id.linearlayout);
+            mWebview = ItemView.findViewById(R.id.webview);
+            //mWebview = new WebView(context);
         }
+
 
 
 
