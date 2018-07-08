@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_main);
         myDb = new DatabaseHelper(this);
         String manufacturer = "xiaomi";
-        if(manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+        /*if(manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
             //this will open auto start screen where user can enable permission for your app2
             Intent intent = new Intent();
             intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
             startActivity(intent);
-        }
+        }*/
 
        //show_text = (Button) findViewById(R.id.show_text);//
        // Intent intent = new Intent(MainActivity.this,TheService.class);
