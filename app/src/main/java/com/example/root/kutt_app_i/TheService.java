@@ -1,6 +1,7 @@
 package com.example.root.kutt_app_i;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,9 +10,12 @@ import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.Parcel;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -29,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.support.v4.app.NotificationCompat.PRIORITY_MIN;
+
 public class TheService extends Service {
 
 
@@ -36,13 +42,33 @@ public class TheService extends Service {
     public final String CHANNEL_ID="my_notification_channel";
     private static final int idUnique=1234;
     TextView link;
-
     @Override
     public void onCreate() {
         super.onCreate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Personal notifications ";
+            String descriptions = "Include Personal notifications";
+            int importance = NotificationManager.IMPORTANCE_LOW;
 
 
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            notificationChannel.setDescription(descriptions);
 
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(notificationChannel);
+
+
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID);
+            Notification notification = notificationBuilder.setOngoing(true)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setPriority(PRIORITY_MIN)
+                    .setSmallIcon(R.drawable.notify)
+                    .setContentText("Notification will appear when you copy a link to clipboard !!")
+                    .setContentTitle("Kutt is running in Background")
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .build();
+            startForeground(101, notification);
+        }
     }
 
     @Override
@@ -70,10 +96,10 @@ public class TheService extends Service {
 
                             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                             notificationManager.createNotificationChannel(notificationChannel);
+
                         }
 
                         final RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.coustomnotification);
-
                         // Set Notification Title
                    /* String strtitle = "This is title";
                     // Set Notification Text
@@ -90,8 +116,8 @@ public class TheService extends Service {
                         // Open NotificationView.java Activity
 
                         Intent open = new Intent(TheService.this, MainActivity.class);
-                        PendingIntent opp = PendingIntent.getActivity(TheService.this, 0, open,
-                                0);
+                        PendingIntent opp = PendingIntent.getActivity(getApplicationContext(), 0, open,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
                        final NotificationCompat.Builder builder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID)
                                 // Set Icon
                                 .setSmallIcon(R.drawable.notify)
@@ -120,9 +146,9 @@ public class TheService extends Service {
                                             i.setType("text/plain");
                                             i.putExtra(Intent.EXTRA_TEXT, response);
                                             Intent intent = new Intent(TheService.this, ActionReceiver.class);
-                                            PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
-                                                    0);
-                                            PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
+                                            PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                                            PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
                                             if(cc.length() > 35) {
                                                 remoteViews.setTextViewText(R.id.linka,cc.substring(0, 32) + "...");
@@ -148,10 +174,10 @@ public class TheService extends Service {
                                             i.setType("text/plain");
                                             i.putExtra(Intent.EXTRA_TEXT, cc);
                                             Intent intent = new Intent(TheService.this, ActionReceiver.class);
-                                            PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
-                                                    0);
-                                            PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
-                                                    1);
+                                            PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                                            PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
+                                                    PendingIntent.FLAG_UPDATE_CURRENT);
                                             if(cc.length() > 35) {
                                                 remoteViews.setTextViewText(R.id.linka,cc.substring(0, 32) + "...");
                                             }else {
@@ -184,10 +210,10 @@ public class TheService extends Service {
                             i.setType("text/plain");
                             i.putExtra(Intent.EXTRA_TEXT, a);
                             Intent intent = new Intent(TheService.this, ActionReceiver.class);
-                            PendingIntent pIntent = PendingIntent.getBroadcast(TheService.this, 0, intent,
-                                    0);
-                            PendingIntent share = PendingIntent.getActivity(TheService.this, 0, i,
-                                    1);
+                            PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
+                            PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
+                                    PendingIntent.FLAG_UPDATE_CURRENT);
                             if(a.length() > 35) {
                                 remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
                             }else {
@@ -228,6 +254,7 @@ public class TheService extends Service {
         Toast.makeText(TheService.this, "Service Started", Toast.LENGTH_SHORT).show();
 
         return START_STICKY;
+        //return super.onStartCommand(intent, flags, startId);
     }
     private boolean isAppIsInBackground(Context context) {
         boolean isInBackground = true;

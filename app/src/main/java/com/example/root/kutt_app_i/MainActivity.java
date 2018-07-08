@@ -1,16 +1,21 @@
 package com.example.root.kutt_app_i;
 
+import android.app.ActivityManager;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,7 +42,7 @@ public class MainActivity extends AppCompatActivity  {
     TextView data,shlink;
     ImageView save,cut,copy,sharelink;
     String text;
-    LinearLayout got,sharel,star;
+    LinearLayout got,sharel,star,login;
     ProgressBar progressBar;
 
     @Override
@@ -45,10 +50,17 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         myDb = new DatabaseHelper(this);
+        String manufacturer = "xiaomi";
+        if(manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
+            //this will open auto start screen where user can enable permission for your app2
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"));
+            startActivity(intent);
+        }
 
        //show_text = (Button) findViewById(R.id.show_text);//
-        Intent intent = new Intent(MainActivity.this,TheService.class);
-        startService(intent);
+       // Intent intent = new Intent(MainActivity.this,TheService.class);
+       // startService(intent);
         got = findViewById(R.id.button);
         sharel = findViewById(R.id.shortl);
         copy = findViewById(R.id.copy);
@@ -62,6 +74,14 @@ public class MainActivity extends AppCompatActivity  {
         sharel.setVisibility(View.GONE);
         cut = findViewById(R.id.cut);
         cut.setVisibility(View.GONE);
+        login = findViewById(R.id.login);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this,Login.class);
+                startActivity(i);
+            }
+        });
         star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +108,46 @@ public class MainActivity extends AppCompatActivity  {
         cut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!text.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                if(text.length()>=27) {
+                    if (!text.substring(0, 26).equals("http://kutt.fossgect.club/")) {
+                        cut.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
+                        final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        cut.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        sharel.setVisibility(View.VISIBLE);
+                                        shlink.setText(response);
+                                        requestQueue.stop();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        cut.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(MainActivity.this, "Something went wrong,try again later", Toast.LENGTH_SHORT).show();
+                                        error.printStackTrace();
+
+                                        requestQueue.stop();
+                                    }
+
+                                }) {
+                            @Override
+                            protected Map<String, String> getParams() {
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("url", text);
+                                return params;
+                            }
+                        };
+                        requestQueue.add(stringRequest);
+                    } else {
+                        Toast.makeText(MainActivity.this, "This link can't be shortened further", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
                     cut.setVisibility(View.GONE);
                     progressBar.setVisibility(View.VISIBLE);
                     final RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
@@ -123,9 +182,6 @@ public class MainActivity extends AppCompatActivity  {
                         }
                     };
                     requestQueue.add(stringRequest);
-                }
-                else {
-                    Toast.makeText(MainActivity.this,"This link can't be shortened further",Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -200,53 +256,46 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(MainActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
         }
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-
-
-
-   /* public void showData( ){
-
-        show_text.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Cursor res = myDb.getAllData();
-
-                if(res.getCount()==0)
-                {
-                    showMessage("Error","Nothing Found");
-                    return;
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            if(isMyServiceRunning(TheService.class)) {
+                stopService(new Intent(MainActivity.this, TheService.class));
+            }else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    getApplicationContext().startForegroundService(new Intent(getApplicationContext(), TheService.class));
                 }
-
-                StringBuffer stringBuffer =new StringBuffer();
-
-                while(res.moveToNext()){
-
-                    stringBuffer.append("Link : "+ res.getString(1)+"\n\n\n");
-
+                else {
+                    getApplicationContext().startService(new Intent(getApplicationContext(), TheService.class));
                 }
-
-                showMessage("Data",stringBuffer.toString());
             }
-        });
+            return true;
+        }
 
-    }*/
-
-
-
-   /* public void showMessage(String title,String message){
-
-        AlertDialog.Builder builder=new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setMessage(message);
-        builder.setTitle(title);
-        builder.show();
-
-
-
-    }*/
-
+        return super.onOptionsItemSelected(item);
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 
 

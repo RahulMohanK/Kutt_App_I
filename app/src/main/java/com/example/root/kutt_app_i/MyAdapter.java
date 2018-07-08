@@ -94,6 +94,10 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             holder.fav.setVisibility(View.VISIBLE);
             holder.del.setVisibility(View.GONE);
         }
+        if( context instanceof StarActivity){
+            holder.del.setVisibility(View.GONE);
+            holder.fav.setVisibility(View.GONE);
+        }
         if(link.length() > 40) {
             holder.linkc =link.substring(0, 37) + "...";
             holder.Name.setText(holder.linkc);

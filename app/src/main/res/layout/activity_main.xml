@@ -30,7 +30,7 @@
             android:tint="@color/tint"
             android:layout_marginRight="4dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_save_white_48dp"
+            android:src="@drawable/save"
 
             />
         <ImageView
@@ -41,7 +41,7 @@
             android:tint="@color/tint"
             android:layout_marginRight="8dp"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_content_cut_white_48dp" />
+            android:src="@drawable/cut" />
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="30dp"
@@ -77,7 +77,7 @@
             android:padding="5dp"
             android:tint="@color/tint"
             android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_content_copy_white_24dp"
+            android:src="@drawable/copy"
             android:layout_marginRight="4dp"
             />
         <ImageView
@@ -111,7 +111,7 @@
     <ImageView
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:src="@drawable/ic_library_books_white_48dp"
+        android:src="@drawable/saved_links"
         android:tint="@color/tint"
         android:layout_gravity="center"
          />
@@ -122,6 +122,7 @@
             android:layout_gravity="center"
             android:text="Saved links"/>
     </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/star"
@@ -136,7 +137,7 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/ic_favorite_white_24dp"
+            android:src="@drawable/fav"
             android:tint="@color/tint"
             android:layout_gravity="center"
             />
@@ -146,6 +147,30 @@
             android:textSize="10sp"
             android:layout_gravity="center"
             android:text="Favorites"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/login"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@drawable/button">
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/not_fav"
+            android:tint="@color/tint"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_gravity="center"
+            android:text="Login"/>
     </LinearLayout>
 </LinearLayout>
 

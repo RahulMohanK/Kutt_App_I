@@ -89,7 +89,7 @@ public class BackgroundActivity extends AppCompatActivity {
 
             ListenItem item = new ListenItem(res.getString(1),res.getInt(2),res.getString(3),res.getBlob(4));
             listenItems.add(item);
-            adapter = new MyAdapter(listenItems,getApplicationContext());
+            adapter = new MyAdapter(listenItems,BackgroundActivity.this);
             recyclerView.setAdapter(adapter);
 
         }
