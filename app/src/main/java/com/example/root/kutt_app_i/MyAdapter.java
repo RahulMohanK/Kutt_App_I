@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.view.menu.MenuView;
@@ -62,8 +63,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
 
     Context context;
-    int lastPosition = -1;
-    int ex=1;
 
 
     public MyAdapter(List<ListenItem> listenItems, Context context) {
@@ -172,10 +171,21 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         holder.web.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(context,MainWeb.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra("link",listen.getLink());
-                context.startActivity(i);
+                Uri uri = Uri.parse(listen.getLink());
+
+
+                CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+
+                intentBuilder.setShowTitle(true);
+                intentBuilder.setToolbarColor(ContextCompat.getColor(context, R.color.white));
+                intentBuilder.setSecondaryToolbarColor(ContextCompat.getColor(context, R.color.white1));
+
+                intentBuilder.setStartAnimations(context, R.anim.slide_in_right, R.anim.slide_out_left);
+                intentBuilder.setExitAnimations(context, android.R.anim.slide_in_left,
+                        android.R.anim.slide_out_right);
+
+                CustomTabsIntent customTabsIntent = intentBuilder.build();
+                customTabsIntent.launchUrl(context, uri);
             }
         });
         holder.linearLayout.setOnLongClickListener(new View.OnLongClickListener() {

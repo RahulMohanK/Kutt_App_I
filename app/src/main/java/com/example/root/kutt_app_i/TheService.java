@@ -40,6 +40,7 @@ public class TheService extends Service {
 
 
     public final String CHANNEL_ID="my_notification_channel";
+    public final String CHANNEL_ID_B="background_channel";
     private static final int idUnique=1234;
     TextView link;
     @Override
@@ -51,14 +52,14 @@ public class TheService extends Service {
             int importance = NotificationManager.IMPORTANCE_LOW;
 
 
-            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID_B, name, importance);
             notificationChannel.setDescription(descriptions);
 
             NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(notificationChannel);
 
 
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID_B);
             Notification notification = notificationBuilder.setOngoing(true)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setPriority(PRIORITY_MIN)
@@ -88,7 +89,7 @@ public class TheService extends Service {
 
                             CharSequence name = "Personal notifications ";
                             String descriptions = "Include Personal notifications";
-                            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                            int importance = NotificationManager.IMPORTANCE_HIGH;
 
 
                             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, name, importance);

@@ -9,7 +9,6 @@
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:name=".App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -21,10 +20,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainWeb"
-            android:parentActivityName=".BackgroundActivity"
-            android:theme="@style/NoActionBar" />
-        <activity
             android:name=".BackgroundActivity"
             android:label="Saved links"
             android:parentActivityName=".MainActivity" />
@@ -32,11 +27,13 @@
         <service
             android:name=".TheService"
             android:exported="false" />
+        <receiver android:name=".CustomTabs$CopyBroadcastReceiver" />
 
         <receiver
             android:name=".ActionReceiver"
             android:enabled="true"
             android:exported="true" />
+
 
         <activity
             android:name=".StarActivity"
