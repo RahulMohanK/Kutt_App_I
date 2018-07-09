@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,16 +41,18 @@ public class MainActivity extends AppCompatActivity  {
 
 
     DatabaseHelper myDb;
-    TextView data,shlink;
-    ImageView save,cut,copy,sharelink;
+    TextView data,shlink,Bartitle;
+    ImageView save,cut,copy,sharelink,profile;
     String text;
-    LinearLayout got,sharel,star,login;
+    LinearLayout got,sharel,star;
     ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.app_bar_main2);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         myDb = new DatabaseHelper(this);
         String manufacturer = "xiaomi";
         /*if(manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity  {
        //show_text = (Button) findViewById(R.id.show_text);//
        // Intent intent = new Intent(MainActivity.this,TheService.class);
        // startService(intent);
+        Bartitle = findViewById(R.id.toolbar_title);
+        profile = findViewById(R.id.profile);
         got = findViewById(R.id.button);
         sharel = findViewById(R.id.shortl);
         copy = findViewById(R.id.copy);
@@ -75,14 +80,14 @@ public class MainActivity extends AppCompatActivity  {
         sharel.setVisibility(View.GONE);
         cut = findViewById(R.id.cut);
         cut.setVisibility(View.GONE);
-        login = findViewById(R.id.login);
-        login.setOnClickListener(new View.OnClickListener() {
+        profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity.this,Login.class);
                 startActivity(i);
             }
         });
+
         star.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -214,10 +219,15 @@ public class MainActivity extends AppCompatActivity  {
             @Override
             public void onPrimaryClipChanged() {
                 text = Clipboard_Utils.getDataFromClipboard(MainActivity.this);
-                if(!text.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                if(text.length()>=27) {
+                    if (!text.substring(0, 26).equals("http://kutt.fossgect.club/")) {
+                        sharel.setVisibility(View.GONE);
+                    }
+                }else {
                     sharel.setVisibility(View.GONE);
                 }
                 get_data();
+
             }
         });
 

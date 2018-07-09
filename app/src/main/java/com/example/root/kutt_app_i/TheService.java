@@ -136,7 +136,98 @@ public class TheService extends Service {
                                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
                         //remoteViews.setOnClickPendingIntent(R.id.not,opp);
-                        if(!a.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                        if(a.length()>=27) {
+                            if (!a.substring(0, 26).equals("http://kutt.fossgect.club/")) {
+                                final RequestQueue requestQueue = Volley.newRequestQueue(TheService.this);
+                                StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
+                                                String cc = clipboard.getText().toString();
+                                                Intent i = new Intent(Intent.ACTION_SEND);
+                                                i.setType("text/plain");
+                                                i.putExtra(Intent.EXTRA_TEXT, response);
+                                                Intent intent = new Intent(TheService.this, ActionReceiver.class);
+                                                PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                                PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
+                                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                                if (cc.length() > 35) {
+                                                    remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
+                                                } else {
+                                                    remoteViews.setTextViewText(R.id.linka, cc);
+                                                }
+                                                remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                                remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                                remoteViews.setTextViewText(R.id.title, response);
+                                                NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                                // Build Notification with Notification Manager
+                                                notificationmanager.notify(0, builder.build());
+                                                requestQueue.stop();
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                String cc = clipboard.getText().toString();
+                                                Toast.makeText(TheService.this, cc, Toast.LENGTH_LONG).show();
+                                                Intent i = new Intent();
+                                                i.setAction(Intent.ACTION_SEND);
+                                                i.setType("text/plain");
+                                                i.putExtra(Intent.EXTRA_TEXT, cc);
+                                                Intent intent = new Intent(TheService.this, ActionReceiver.class);
+                                                PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                                PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
+                                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                                if (cc.length() > 35) {
+                                                    remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
+                                                } else {
+                                                    remoteViews.setTextViewText(R.id.linka, cc);
+                                                }
+                                                remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                                remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                                remoteViews.setTextViewText(R.id.title, "Something went wrong!!");
+                                                NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                                // Build Notification with Notification Manager
+                                                notificationmanager.notify(0, builder.build());
+                                                error.printStackTrace();
+                                                requestQueue.stop();
+                                            }
+
+                                        }) {
+                                    @Override
+                                    protected Map<String, String> getParams() {
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        String cc = clipboard.getText().toString();
+                                        params.put("url", cc);
+                                        return params;
+                                    }
+                                };
+                                requestQueue.add(stringRequest);
+                            } else {
+                                Intent i = new Intent();
+                                i.setAction(Intent.ACTION_SEND);
+                                i.setType("text/plain");
+                                i.putExtra(Intent.EXTRA_TEXT, a);
+                                Intent intent = new Intent(TheService.this, ActionReceiver.class);
+                                PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
+                                        PendingIntent.FLAG_UPDATE_CURRENT);
+                                if (a.length() > 35) {
+                                    remoteViews.setTextViewText(R.id.linka, a.substring(0, 32) + "...");
+                                } else {
+                                    remoteViews.setTextViewText(R.id.linka, a);
+                                }
+                                remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
+                                remoteViews.setOnClickPendingIntent(R.id.image1, share);
+                                remoteViews.setTextViewText(R.id.title, "KUTT");
+                                NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                // Build Notification with Notification Manager
+                                notificationmanager.notify(0, builder.build());
+                            }
+                        }else {
                             final RequestQueue requestQueue = Volley.newRequestQueue(TheService.this);
                             StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
                                     new Response.Listener<String>() {
@@ -151,14 +242,14 @@ public class TheService extends Service {
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
                                             PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
-                                            if(cc.length() > 35) {
-                                                remoteViews.setTextViewText(R.id.linka,cc.substring(0, 32) + "...");
-                                            }else {
-                                                remoteViews.setTextViewText(R.id.linka,cc);
+                                            if (cc.length() > 35) {
+                                                remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
+                                            } else {
+                                                remoteViews.setTextViewText(R.id.linka, cc);
                                             }
                                             remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                                             remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                                            remoteViews.setTextViewText(R.id.title,response);
+                                            remoteViews.setTextViewText(R.id.title, response);
                                             NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                             // Build Notification with Notification Manager
                                             notificationmanager.notify(0, builder.build());
@@ -169,7 +260,7 @@ public class TheService extends Service {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
                                             String cc = clipboard.getText().toString();
-                                            Toast.makeText(TheService.this,cc,Toast.LENGTH_LONG).show();
+                                            Toast.makeText(TheService.this, cc, Toast.LENGTH_LONG).show();
                                             Intent i = new Intent();
                                             i.setAction(Intent.ACTION_SEND);
                                             i.setType("text/plain");
@@ -179,14 +270,14 @@ public class TheService extends Service {
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
                                             PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
                                                     PendingIntent.FLAG_UPDATE_CURRENT);
-                                            if(cc.length() > 35) {
-                                                remoteViews.setTextViewText(R.id.linka,cc.substring(0, 32) + "...");
-                                            }else {
-                                                remoteViews.setTextViewText(R.id.linka,cc);
+                                            if (cc.length() > 35) {
+                                                remoteViews.setTextViewText(R.id.linka, cc.substring(0, 32) + "...");
+                                            } else {
+                                                remoteViews.setTextViewText(R.id.linka, cc);
                                             }
                                             remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
                                             remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                                            remoteViews.setTextViewText(R.id.title,"Something went wrong!!");
+                                            remoteViews.setTextViewText(R.id.title, "Something went wrong!!");
                                             NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                                             // Build Notification with Notification Manager
                                             notificationmanager.notify(0, builder.build());
@@ -204,28 +295,6 @@ public class TheService extends Service {
                                 }
                             };
                             requestQueue.add(stringRequest);
-                        }
-                        else {
-                            Intent i = new Intent();
-                            i.setAction(Intent.ACTION_SEND);
-                            i.setType("text/plain");
-                            i.putExtra(Intent.EXTRA_TEXT, a);
-                            Intent intent = new Intent(TheService.this, ActionReceiver.class);
-                            PendingIntent pIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                            PendingIntent share = PendingIntent.getActivity(getApplicationContext(), 0, i,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-                            if(a.length() > 35) {
-                                remoteViews.setTextViewText(R.id.linka,a.substring(0, 32) + "...");
-                            }else {
-                                remoteViews.setTextViewText(R.id.linka,a);
-                            }
-                            remoteViews.setOnClickPendingIntent(R.id.image2, pIntent);
-                            remoteViews.setOnClickPendingIntent(R.id.image1, share);
-                            remoteViews.setTextViewText(R.id.title,"KUTT");
-                            NotificationManager notificationmanager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                            // Build Notification with Notification Manager
-                            notificationmanager.notify(0, builder.build());
                         }
 
                        // remoteViews.setString(R.id.link,String ,a);

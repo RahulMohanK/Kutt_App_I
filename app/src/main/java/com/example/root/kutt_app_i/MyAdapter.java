@@ -1,31 +1,15 @@
 package com.example.root.kutt_app_i;
 
-import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.view.menu.MenuView;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -44,6 +28,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -140,7 +125,11 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                     @Override
                     public void onReceivedIcon(WebView view, Bitmap icon) {
                         super.onReceivedIcon(view, icon);
-                        holder.web.setImageBitmap(icon);
+                        //holder.web.setImageBitmap(icon);
+                        Glide
+                                .with(context)
+                                .load(icon)
+                                .into(holder.web);
                         holder.got_icon = true;
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         icon.compress(Bitmap.CompressFormat.PNG, 0, stream);
@@ -164,7 +153,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                 holder.title.setText(title_T);
             }
             if(icon_T != null) {
-                holder.web.setImageBitmap(BitmapFactory.decodeByteArray(icon_T, 0, icon_T.length));
+                //holder.web.setImageBitmap(BitmapFactory.decodeByteArray(icon_T, 0, icon_T.length));
+               Glide
+                        .with(context)
+                        .load(listen.getIcon())
+                        .into(holder.web);
+
             }
 
         }

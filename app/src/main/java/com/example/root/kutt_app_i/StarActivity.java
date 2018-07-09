@@ -36,6 +36,7 @@ public class StarActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
 
 
 
@@ -93,7 +94,9 @@ public class StarActivity extends AppCompatActivity {
 
         myDb = new DatabaseHelper(this);
 
-        myDb.updateNormal(listen.getLink());
+        myDb.updateData(listen.getLink());
+        listenItems.remove(pos);
+        adapter.notifyItemRemoved(pos);
         //holder.imageView.setImageResource(R.drawable.ic_star_old);
         Toast.makeText(this,"Removed from favorites!",Toast.LENGTH_LONG).show();
 

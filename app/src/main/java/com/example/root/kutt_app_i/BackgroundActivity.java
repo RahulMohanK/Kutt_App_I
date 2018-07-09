@@ -43,6 +43,7 @@ public class BackgroundActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
 
 
 
@@ -104,7 +105,8 @@ public class BackgroundActivity extends AppCompatActivity {
         myDb = new DatabaseHelper(this);
 
         myDb.deletelink(listen.getLink());
-        //holder.imageView.setImageResource(R.drawable.ic_star_old);
+        listenItems.remove(pos);
+        adapter.notifyItemRemoved(pos);
         Toast.makeText(this,"Link deleted!!",Toast.LENGTH_LONG).show();
 
        /* if(isUpdate)
