@@ -69,11 +69,6 @@ public class StarActivity extends AppCompatActivity {
         Cursor res = myDb.getUpdateData();
 
 
-        /*if(res.getCount()==0)
-        {
-            showMessage("Error","Nothing Found");
-            return;
-        }*/
 
         while(res.moveToNext()){
 

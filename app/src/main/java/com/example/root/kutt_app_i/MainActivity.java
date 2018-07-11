@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity  {
 
     DatabaseHelper myDb;
     TextView data,shlink,Bartitle;
-    ImageView save,cut,copy,sharelink,profile;
+    ImageView save,cut,copy,sharelink,close;
     String text;
-    LinearLayout got,sharel,star;
+    LinearLayout got,sharel;
     ProgressBar progressBar;
 
     @Override
@@ -66,33 +66,25 @@ public class MainActivity extends AppCompatActivity  {
        // Intent intent = new Intent(MainActivity.this,TheService.class);
        // startService(intent);
         Bartitle = findViewById(R.id.toolbar_title);
-        profile = findViewById(R.id.profile);
-        got = findViewById(R.id.button);
+        //profile = findViewById(R.id.profile);
+        //got = findViewById(R.id.button);
+        close = findViewById(R.id.close);
         sharel = findViewById(R.id.shortl);
         copy = findViewById(R.id.copy);
         progressBar = findViewById(R.id.progressBar);
         sharelink = findViewById(R.id.sharelink);
         data = findViewById(R.id.clipboard_data);
         save = findViewById(R.id.save);
-        star = findViewById(R.id.star);
         save.setVisibility(View.GONE);
         shlink = findViewById(R.id.shortlink);
         sharel.setVisibility(View.GONE);
         cut = findViewById(R.id.cut);
         cut.setVisibility(View.GONE);
-        profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MainActivity.this,Login.class);
-                startActivity(i);
-            }
-        });
 
-        star.setOnClickListener(new View.OnClickListener() {
+        close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent j = new Intent(MainActivity.this,StarActivity.class);
-                startActivity(j);
+                finish();
             }
         });
         sharelink.setOnClickListener(new View.OnClickListener() {
@@ -193,14 +185,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
        //clipboardData = (TextView) findViewById(R.id.clipboard_data);//
-       got.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View v) {
-
-               Intent ii = new Intent(MainActivity.this,BackgroundActivity.class);
-               startActivity(ii);
-           }
-       });
        get_data();
         save.setOnClickListener(new View.OnClickListener() {
             @Override

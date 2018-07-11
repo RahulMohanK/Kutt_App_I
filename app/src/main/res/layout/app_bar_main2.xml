@@ -10,6 +10,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:elevation="1dp"
         >
 
         <android.support.v7.widget.Toolbar
@@ -23,28 +24,28 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 >
-
+                <ImageView
+                    android:id="@+id/close"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:padding="3dp"
+                    android:layout_marginRight="5dp"
+                    android:tint="#000000"
+                    android:src="@drawable/close"/>
             <TextView
                 android:id="@+id/toolbar_title"
                 android:layout_width="match_parent"
                 android:textSize="20sp"
                 android:textColor="@color/cardview_dark_background"
-                android:text="Kutt"
-                android:layout_weight="1"
+                android:text="Add Link"
+                android:textStyle="bold"
+
                 android:layout_marginLeft="5dp"
                 android:layout_gravity="center_vertical"
                 android:layout_height="30dp"
                 />
 
-                <ImageView
-                    android:id="@+id/profile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_gravity="right"
-                    android:padding="2dp"
-                    android:layout_weight="1"
-                    android:tint="#125eb6"
-                    android:src="@drawable/baseline_account_circle_black_36dp"/>
 
             </LinearLayout>
         </android.support.v7.widget.Toolbar>
