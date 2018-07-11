@@ -1,10 +1,12 @@
 package com.example.root.kutt_app_i;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +19,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -82,8 +85,21 @@ public class BackgroundActivity extends AppCompatActivity {
             public void onClick(View v) {
                 sa=1;
                 search_box.setText("");
+                int centerX = search.getRight();
+                int centerY = search.getBottom();
+                int startRadius = 0;
+                int endRadius = (int) Math.hypot(default_title.getWidth(), default_title.getHeight());
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Animator anim = ViewAnimationUtils.createCircularReveal
+                            (search_title, centerX, centerY, startRadius, endRadius);
+                    anim.setDuration(500);
+                    search_title.setVisibility(View.VISIBLE);
+                    anim.start();
+                }else {
+                    search_title.setVisibility(View.VISIBLE);
+                }
                 default_title.setVisibility(View.GONE);
-                search_title.setVisibility(View.VISIBLE);
                 search_box.requestFocus();
                 if(fa==1) {
                     adapter = new MyAdapter(SearchItems, getApplicationContext());
@@ -124,6 +140,21 @@ public class BackgroundActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sa=0;
+                int centerX = close.getRight();
+                int centerY = close.getBottom();
+                int startRadius = (int) Math.hypot(search_title.getWidth(),search_title.getHeight());
+                int endRadius = 0;
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Animator anim = ViewAnimationUtils.createCircularReveal
+                            (search_title, centerX, centerY, startRadius, endRadius);
+                    default_title.setVisibility(View.VISIBLE);
+                    anim.setDuration(500);
+                    anim.start();
+                }else {
+                    default_title.setVisibility(View.VISIBLE);
+                }
+                search_title.setVisibility(View.GONE);
                 if(fa==1) {
                     adapter = new MyAdapter(listenItems, getApplicationContext());
                 }else {

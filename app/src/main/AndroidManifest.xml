@@ -15,10 +15,10 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".BackgroundActivity"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,8 +28,8 @@
 
         <service
             android:name=".TheService"
-            android:exported="true"
             android:enabled="true"
+            android:exported="true"
             android:process=":serviceProcess" />
 
         <receiver
@@ -44,7 +44,8 @@
         <activity
             android:name=".Login"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Dis"></activity>
+        <activity android:name=".Dis" />
+        <activity android:name=".Account"></activity>
     </application>
 
 </manifest>
