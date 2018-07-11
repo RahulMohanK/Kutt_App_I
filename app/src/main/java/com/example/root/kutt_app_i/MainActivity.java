@@ -264,24 +264,14 @@ public class MainActivity extends AppCompatActivity  {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        SharedPreferences sh = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor ed = sh.edit();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            if(isMyServiceRunning(TheService.class)) {
+            if(isMyServiceRunning(TheService.class) || isMyServiceRunning(SensorService.class)) {
                 stopService(new Intent(MainActivity.this, TheService.class));
-                ed.putInt("mode",0);
-                ed.apply();
+                stopService(new Intent(MainActivity.this,SensorService.class));
                 Toast.makeText(MainActivity.this,"Service Stopped!",Toast.LENGTH_SHORT).show();
             }else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    getApplicationContext().startForegroundService(new Intent(getApplicationContext(), TheService.class));
-                }
-                else {
-                    getApplicationContext().startService(new Intent(getApplicationContext(), TheService.class));
-                }
-                ed.putInt("mode",1);
-                ed.apply();
+                getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
             }
             return true;
         }
