@@ -31,19 +31,7 @@ public class Account extends AppCompatActivity {
         });
         SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
         final SharedPreferences.Editor editor = not.edit();
-       /* notification.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isMyServiceRunning(TheService.class) || isMyServiceRunning(SensorService.class)) {
-                    stopService(new Intent(Account.this,SensorService.class));
-                    stopService(new Intent(Account.this, TheService.class));
-                    Toast.makeText(Account.this,"Service Stopped!",Toast.LENGTH_SHORT).show();
-                }else {
-                    getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
-                }
-            }
-        });*/
-        if(isMyServiceRunning(TheService.class) || isMyServiceRunning(SensorService.class)) {
+        if(isMyServiceRunning(TheService.class) || isMyServiceRunning(SensorService.class) || not.getInt("enable",1)==1) {
             notification.setChecked(true);
         }else {
             notification.setChecked(false);

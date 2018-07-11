@@ -70,11 +70,6 @@ public class TheService extends Service {
                     .build();
            // startForeground(101, notification);
         }
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
         final ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
 
         clipboard.addPrimaryClipChangedListener( new ClipboardManager.OnPrimaryClipChangedListener() {
@@ -119,7 +114,7 @@ public class TheService extends Service {
                         Intent open = new Intent(TheService.this, MainActivity.class);
                         PendingIntent opp = PendingIntent.getActivity(getApplicationContext(), 0, open,
                                 PendingIntent.FLAG_UPDATE_CURRENT);
-                       final NotificationCompat.Builder builder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID)
+                        final NotificationCompat.Builder builder = new NotificationCompat.Builder(TheService.this, CHANNEL_ID)
                                 // Set Icon
                                 .setSmallIcon(R.drawable.notify)
                                 // Set Ticker Message
@@ -297,7 +292,7 @@ public class TheService extends Service {
                             requestQueue.add(stringRequest);
                         }
 
-                       // remoteViews.setString(R.id.link,String ,a);
+                        // remoteViews.setString(R.id.link,String ,a);
 
 
 
@@ -322,6 +317,14 @@ public class TheService extends Service {
             }
         });
         Toast.makeText(TheService.this, "Service Started", Toast.LENGTH_SHORT).show();
+
+        //return START_STICKY;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+
 
         return START_STICKY;
         //return super.onStartCommand(intent, flags, startId);

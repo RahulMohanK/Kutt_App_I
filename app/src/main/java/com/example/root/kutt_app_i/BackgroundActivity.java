@@ -2,6 +2,7 @@ package com.example.root.kutt_app_i;
 
 import android.animation.Animator;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -20,6 +21,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewAnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -71,6 +73,10 @@ public class BackgroundActivity extends AppCompatActivity {
         listenItems = new ArrayList<>();
         SearchItems = new ArrayList<>();
         fa=0;sa=0;
+        SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
+        if(not.getInt("enable",1)==1){
+            getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
+        }
         myDb = new DatabaseHelper(this);
 
         recyclerView =  findViewById(R.id.recyclerView);
@@ -140,6 +146,9 @@ public class BackgroundActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 sa=0;
+                search_box.clearFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(search_box.getWindowToken(), 0);
                 int centerX = close.getRight();
                 int centerY = close.getBottom();
                 int startRadius = (int) Math.hypot(search_title.getWidth(),search_title.getHeight());

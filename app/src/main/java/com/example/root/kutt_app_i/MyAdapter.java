@@ -124,7 +124,60 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             public void onClick(View v) {
                 holder.share.setVisibility(View.GONE);
                 holder.progressBar.setVisibility(View.VISIBLE);
-                if(!link.substring(0,26).equals("http://kutt.fossgect.club/")) {
+                if(link.length()>=27) {
+                    if (!link.substring(0, 26).equals("http://kutt.fossgect.club/")) {
+                        final RequestQueue requestQueue = Volley.newRequestQueue(context);
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        Intent i = new Intent();
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        i.setAction(Intent.ACTION_SEND);
+                                        i.putExtra(Intent.EXTRA_TEXT, response);
+                                        i.setType("text/plain");
+                                        holder.share.setVisibility(View.VISIBLE);
+                                        holder.progressBar.setVisibility(View.GONE);
+                                        context.startActivity(i);
+                                        Toast.makeText(context, "Sharing shortened link", Toast.LENGTH_SHORT).show();
+                                        requestQueue.stop();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Intent i = new Intent();
+                                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        i.setAction(Intent.ACTION_SEND);
+                                        i.putExtra(Intent.EXTRA_TEXT, link);
+                                        i.setType("text/plain");
+                                        holder.share.setVisibility(View.VISIBLE);
+                                        holder.progressBar.setVisibility(View.GONE);
+                                        context.startActivity(i);
+                                        error.printStackTrace();
+                                        requestQueue.stop();
+                                    }
+
+                                }) {
+                            @Override
+                            protected Map<String, String> getParams() {
+                                Map<String, String> params = new HashMap<String, String>();
+                                params.put("url", link);
+                                return params;
+                            }
+                        };
+                        requestQueue.add(stringRequest);
+                    } else {
+                        Intent i = new Intent();
+                        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        i.setAction(Intent.ACTION_SEND);
+                        i.putExtra(Intent.EXTRA_TEXT, link);
+                        i.setType("text/plain");
+                        holder.share.setVisibility(View.VISIBLE);
+                        holder.progressBar.setVisibility(View.GONE);
+                        context.startActivity(i);
+                    }
+                }else {
                     final RequestQueue requestQueue = Volley.newRequestQueue(context);
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://kutt.fossgect.club/short/",
                             new Response.Listener<String>() {
@@ -138,7 +191,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                                     holder.share.setVisibility(View.VISIBLE);
                                     holder.progressBar.setVisibility(View.GONE);
                                     context.startActivity(i);
-                                    Toast.makeText(context,"Sharing shortened link",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Sharing shortened link", Toast.LENGTH_SHORT).show();
                                     requestQueue.stop();
                                 }
                             },
@@ -166,16 +219,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
                         }
                     };
                     requestQueue.add(stringRequest);
-                }
-                else {
-                    Intent i = new Intent();
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    i.setAction(Intent.ACTION_SEND);
-                    i.putExtra(Intent.EXTRA_TEXT, link);
-                    i.setType("text/plain");
-                    holder.share.setVisibility(View.VISIBLE);
-                    holder.progressBar.setVisibility(View.GONE);
-                    context.startActivity(i);
                 }
 
             }
