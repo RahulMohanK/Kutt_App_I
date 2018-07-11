@@ -178,7 +178,7 @@ public class BackgroundActivity extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(BackgroundActivity.this,Login.class);
+                Intent i = new Intent(BackgroundActivity.this,Account.class);
                 startActivity(i);
             }
         });
@@ -244,7 +244,9 @@ public class BackgroundActivity extends AppCompatActivity {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
                         if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT && dd==0) {
-                            diss(holder.getAdapterPosition());
+                            try {
+                                diss(holder.getAdapterPosition());
+                            }catch (Exception e){}
                         }
                     }
 

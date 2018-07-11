@@ -251,42 +251,7 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(MainActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
         }
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main2, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            if(isMyServiceRunning(TheService.class) || isMyServiceRunning(SensorService.class)) {
-                stopService(new Intent(MainActivity.this, TheService.class));
-                stopService(new Intent(MainActivity.this,SensorService.class));
-                Toast.makeText(MainActivity.this,"Service Stopped!",Toast.LENGTH_SHORT).show();
-            }else {
-                getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
-            }
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
-    }
 
 
 

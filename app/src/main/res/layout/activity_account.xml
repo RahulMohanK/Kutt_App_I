@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Account">
+    tools:context=".Account"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/black1" />
+        android:gravity="center"
+        android:background="@color/black1">
+        
+        <Button
+            android:id="@+id/sign_in"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="SIGN IN"
+            android:background="@drawable/textbox"
+            android:textColor="@color/white"
 
-    <LinearLayout
+            />
+        
+    </LinearLayout>
+    <Switch
+        android:id="@+id/notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notification"
+        android:padding="5dp"
+        android:layout_margin="20dp"/>
+
+   <!-- <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:orientation="vertical"
         android:layout_marginTop="100dp">
 
@@ -33,6 +49,6 @@
             android:textStyle="bold"
             android:gravity="center"/>
 
-    </LinearLayout>
+    </LinearLayout> -->
 
-</RelativeLayout>
+</LinearLayout>

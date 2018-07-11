@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -20,6 +21,8 @@ import android.util.Log;
 
 public class SensorService extends Service implements SensorEventListener {
     BroadcastReceiver mReceiver;
+    SharedPreferences not;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -32,6 +35,7 @@ public class SensorService extends Service implements SensorEventListener {
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(mReceiver, filter);
+        not = getSharedPreferences("notif",MODE_PRIVATE);
     }
 
     @Override
@@ -54,7 +58,7 @@ public class SensorService extends Service implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-             if(!isMyServiceRunning(TheService.class)){
+             if(!isMyServiceRunning(TheService.class) && not.getInt("enable",1) == 1){
                  Log.e("Main service","not running");
                  Intent intent=new Intent(this,TheService.class);
                  startService(intent);

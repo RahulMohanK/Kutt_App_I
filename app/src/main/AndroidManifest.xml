@@ -58,7 +58,9 @@
             android:name=".Login"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Dis" />
-        <activity android:name=".Account"></activity>
+        <activity android:name=".Account"
+            android:parentActivityName=".BackgroundActivity"
+            android:label="Account"/>
     </application>
 
 </manifest>
