@@ -10,9 +10,14 @@ public class App extends Application {
         super.onCreate();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getApplicationContext().startForegroundService(new Intent(getApplicationContext(), TheService.class));
+
+            //start sensorService which inturn will start TheService
+            getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
         }
         else {
-            getApplicationContext().startService(new Intent(getApplicationContext(), TheService.class));
+//            getApplicationContext().startService(new Intent(getApplicationContext(), TheService.class));
+
+            getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
         }
     }
 }
