@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity  {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDb = new DatabaseHelper(this);
-        String manufacturer = "xiaomi";
+       // String manufacturer = "xiaomi";
         /*if(manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
             //this will open auto start screen where user can enable permission for your app2
             Intent intent = new Intent();
@@ -250,6 +250,7 @@ public class MainActivity extends AppCompatActivity  {
             } else
                 Toast.makeText(MainActivity.this, "Clipboard is empty.", Toast.LENGTH_SHORT).show();
         }
+        //myDb.close();
     }
 
 

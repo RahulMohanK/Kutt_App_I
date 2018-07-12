@@ -73,7 +73,7 @@
                     android:padding="2dp"
                     android:layout_marginLeft="10dp"
                     android:visibility="gone"
-                    android:tint="#000000"
+                    android:tint="#c91515"
                     android:src="@drawable/fav"/>
                 <ImageView
                     android:id="@+id/search"

@@ -57,7 +57,7 @@ public class BackgroundActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_background);
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         favorite = findViewById(R.id.added);
         title_text = findViewById(R.id.toolbar_title);
@@ -75,7 +75,11 @@ public class BackgroundActivity extends AppCompatActivity {
         fa=0;sa=0;
         SharedPreferences not = getSharedPreferences("notif",MODE_PRIVATE);
         if(not.getInt("enable",1)==1){
-            getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getApplicationContext().startForegroundService(new Intent(getApplicationContext(), TheService.class));
+            }else {
+                getApplicationContext().startService(new Intent(getApplicationContext(), SensorService.class));
+            }
         }
         myDb = new DatabaseHelper(this);
 
@@ -94,7 +98,7 @@ public class BackgroundActivity extends AppCompatActivity {
                 int centerX = search.getRight();
                 int centerY = search.getBottom();
                 int startRadius = 0;
-                int endRadius = (int) Math.hypot(default_title.getWidth(), default_title.getHeight());
+                int endRadius = (int) Math.hypot(toolbar.getWidth(), toolbar.getHeight());
 
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Animator anim = ViewAnimationUtils.createCircularReveal
@@ -107,6 +111,8 @@ public class BackgroundActivity extends AppCompatActivity {
                 }
                 default_title.setVisibility(View.GONE);
                 search_box.requestFocus();
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(search_box, InputMethodManager.SHOW_IMPLICIT);
                 if(fa==1) {
                     adapter = new MyAdapter(SearchItems, getApplicationContext());
                 }else {
@@ -151,7 +157,7 @@ public class BackgroundActivity extends AppCompatActivity {
                 imm.hideSoftInputFromWindow(search_box.getWindowToken(), 0);
                 int centerX = close.getRight();
                 int centerY = close.getBottom();
-                int startRadius = (int) Math.hypot(search_title.getWidth(),search_title.getHeight());
+                int startRadius = (int) Math.hypot(toolbar.getWidth(),toolbar.getHeight());
                 int endRadius = 0;
 
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

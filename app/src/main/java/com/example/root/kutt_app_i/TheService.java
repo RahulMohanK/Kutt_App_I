@@ -68,7 +68,7 @@ public class TheService extends Service {
                     .setContentTitle("Kutt is running in Background")
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .build();
-           // startForeground(101, notification);
+            startForeground(101, notification);
         }
         final ClipboardManager clipboard = (ClipboardManager) this.getSystemService(Context.CLIPBOARD_SERVICE);
 

@@ -56,10 +56,10 @@
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".Login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBarDark" />
         <activity android:name=".Dis" />
         <activity android:name=".Account"
-            android:parentActivityName=".BackgroundActivity"
+            android:theme="@style/AppTheme.NoActionBarDark"
             android:label="Account"/>
     </application>
 
