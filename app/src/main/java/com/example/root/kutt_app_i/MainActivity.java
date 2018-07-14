@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity  {
     LinearLayout got,sharel;
     ProgressBar progressBar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity  {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         myDb = new DatabaseHelper(this);
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String type = intent.getType();
        // String manufacturer = "xiaomi";
         /*if(manufacturer.equalsIgnoreCase(android.os.Build.MANUFACTURER)) {
             //this will open auto start screen where user can enable permission for your app2
@@ -80,6 +84,15 @@ public class MainActivity extends AppCompatActivity  {
         sharel.setVisibility(View.GONE);
         cut = findViewById(R.id.cut);
         cut.setVisibility(View.GONE);
+
+        if (Intent.ACTION_SEND.equals(action) && type != null) {
+            if ("text/plain".equals(type)) {
+                String receivedText = intent.getStringExtra(Intent.EXTRA_TEXT);
+                receiveData(receivedText);// Handle text being sent
+            }
+        }else {
+            get_data();
+        }
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +198,7 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
        //clipboardData = (TextView) findViewById(R.id.clipboard_data);//
-       get_data();
+       //get_data();
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -234,6 +247,24 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
 
+
+    }
+    public  void receiveData(String text2){
+        String[] text1 = text2.split(":");
+        if (!text2.equals("")) {
+            if (text1[0].equals("http") || text1[0].equals("https")) {
+                if(text2.length() > 62) {
+                    data.setText(text2.substring(0, 59) + "...");
+                }else {
+                    data.setText(text2);
+                }
+                text = text2;
+                save.setVisibility(View.VISIBLE);
+                cut.setVisibility(View.VISIBLE);
+            } else {
+                data.setText("Not a valid link");
+            }
+        }
 
     }
     public void insertData(){

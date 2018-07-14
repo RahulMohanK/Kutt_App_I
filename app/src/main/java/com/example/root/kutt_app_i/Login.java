@@ -1,6 +1,8 @@
 package com.example.root.kutt_app_i;
 
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +33,7 @@ public class Login extends AppCompatActivity {
     EditText username,password;
     TextView submit,test,login_text;
     ProgressBar progressBar;
+    FloatingActionButton signup;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,12 +41,20 @@ public class Login extends AppCompatActivity {
         username = findViewById(R.id.user_id);
         password = findViewById(R.id.password);
         submit = findViewById(R.id.login);
+        signup = findViewById(R.id.sign_up);
         login_text = findViewById(R.id.login_text);
         Typeface custom_font1 = Typeface.createFromAsset(getAssets(),"fonts/Montserrat_Light.ttf");
         login_text.setTypeface(custom_font1);
         CookieHandler.setDefault( new CookieManager( null, CookiePolicy.ACCEPT_ALL ) );
         progressBar = findViewById(R.id.progressBar);
         test = findViewById(R.id.test);
+        signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Login.this,SignUp.class);
+                startActivity(i);
+            }
+        });
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

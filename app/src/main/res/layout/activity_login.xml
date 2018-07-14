@@ -5,6 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Login">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,17 +32,10 @@
             android:textSize="40sp" />
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:scrollbars="none"
-        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -47,31 +45,30 @@
                 android:layout_marginTop="30dp"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+
 
                     <EditText
                         android:id="@+id/user_id"
+                        android:drawableLeft="@drawable/ic_baseline_person_24px"
+                        android:drawablePadding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Username"
                         android:inputType="textAutoComplete" />
-                </android.support.design.widget.TextInputLayout>
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:layout_marginTop="5dp">
+
 
                     <EditText
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="5dp"
+                        android:drawableLeft="@drawable/ic_baseline_lock_24px"
+                        android:drawablePadding="10dp"
                         android:hint="Password"
                         android:inputType="textWebPassword" />
-                </android.support.design.widget.TextInputLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -118,10 +115,11 @@
                 android:textColor="#ffffff"
                 android:visibility="gone" />
         </LinearLayout>
-    </ScrollView>
     </LinearLayout>
+    </ScrollView>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
