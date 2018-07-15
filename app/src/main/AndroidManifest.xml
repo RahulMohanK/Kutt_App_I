@@ -63,13 +63,16 @@
         <activity
             android:name=".Login"
             android:theme="@style/AppTheme.NoActionBarDark" />
-        <activity android:name=".Dis" />
+        <activity android:name=".Dis"  android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Account"
             android:label="Account"
             android:theme="@style/AppTheme.NoActionBarDark" />
-        <activity android:name=".SignUp"
-            android:theme="@style/AppTheme.NoActionBarDark"/>
+        <activity
+            android:name=".SignUp"
+            android:theme="@style/AppTheme.NoActionBarDark" />
+        <activity android:name=".GraphActivity"  android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".WebActivity"  android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
