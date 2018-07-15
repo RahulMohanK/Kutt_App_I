@@ -52,8 +52,8 @@ public class Dis extends AppCompatActivity{
 
 
             this.data[i]=listenItems.get(i).getLink();
-            PageAdapter viewPageAdapter = new PageAdapter(getSupportFragmentManager(), data);
-            viewPager.setAdapter(viewPageAdapter);
+           /* PageAdapter viewPageAdapter = new PageAdapter(getSupportFragmentManager(), data);
+            viewPager.setAdapter(viewPageAdapter);*/
         }
 
     }
